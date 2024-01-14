@@ -17,11 +17,11 @@ read2_chromap=${out}/read2_miss_chromap.fq ## will be used only if inp_read2 is 
 
 headers_missing_chromap=${out}/headers_missing_chromap.txt
 
-printf "" > ${read1_piscem}
-printf "" > ${barcode_piscem}
+> ${read1_piscem}
+> ${barcode_piscem}
 if [[ -n $4 ]]
     then
-        printf "" > ${read2_piscem}
+        > ${read2_piscem}
 fi
 
 ### extract each barcode and find its corresponding header in the barcode file
