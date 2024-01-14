@@ -36,3 +36,6 @@ else
             -b $barcode_file \
             -o ${out_dir}/map_out_${out_suff}.bed
 fi
+
+## Example
+## sbatch helper_scripts/align_chromap.sh samp1285 sub_seq/barcode_subsamp.fq sub_seq/read1_subsamp.fq sub_seq/read2_subsamp.fq

@@ -51,3 +51,6 @@ else
         --ps_skip $ps_skip \
         --thr $thr
 fi
+
+## Example
+## sbatch helper_scripts/align_piscem.sh samp1285 sub_seq/barcode_subsamp.fq sub_seq/read1_subsamp.fq sub_seq/read2_subsamp.fq
