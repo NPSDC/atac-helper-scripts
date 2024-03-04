@@ -5,6 +5,8 @@
 #SBATCH --time=05:00:00
 #SBATCH --qos=high
 #SBATCH --account=cbcb
+#SBATCH --constraint=EPYC-7313
+#SBATCH --mem=60G
 
 module load gcc/11.2.0
 module load cmake/3.22.1
@@ -22,6 +24,7 @@ ps_skip=false
 thr=0.7
 ref_ind=/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_analysis/hg38_ind_k${k}/hg38_ind_k${k}
 piscem_dir=/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_analysis
+#piscem_dir=/fs/cbcb-scratch/npsingh/Atacseq/piscem_analysis
 out_start=$1
 barcode_file=$2
 read1_file=$3
