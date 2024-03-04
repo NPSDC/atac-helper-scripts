@@ -45,7 +45,7 @@ def proc_sam_reads_dict(l1, l2, mappings, vals, inds):
                 return [read_name, -1, i]
     return [read_name, 0, i]
 
-def proc_sam_reads_list(l1, l2, mappings, vals, inds):
+def proc_sam_reads_dict(l1, l2, mappings, vals, inds):
     # print(inds[0])
     l1=l1.split("\n")[0].split("\t")
     l2=l2.split("\n")[0].split("\t")
@@ -73,29 +73,73 @@ def proc_sam_reads_list(l1, l2, mappings, vals, inds):
         score2 = int(l2[11].split(":")[2].strip())
         score = score1+score2
         if read_name != prev_read :
-            mappings.append([score,1]) ## new read, thus create an entry, score_flag 0 means check, -1 means prev_read same as cur_read but score is inferior
+            mappings[read_name]=[score,1] ## new read, thus create an entry, score_flag 0 means check, -1 means prev_read same as cur_read but score is inferior
             return [read_name, 0, i+1]
         else: ## same read
-            if score > mappings[i][0]:
-                mappings[i]=[score,1]
+            if score > mappings[read_name][0]:
+                mappings[read_name]=[score,1]
                 return [read_name, 0, i]
-            elif mappings[i][0] == score: ## append s
-                mappings[i][1]+=1
+            elif mappings[read_name][0] == score: ## append s
+                mappings[read_name][1] += 1
                 return [read_name, 0, i]
             else:
                 return [read_name, -1, i]
     return [read_name, 0, i]
+
+def proc_sam_reads_list(l1, l2, mappings, vals, inds):
+    # print(inds[0])
+    l1=l1.split("\n")[0].split("\t")
+    l2=l2.split("\n")[0].split("\t")
+
+    prev_read = vals[0]
+    best_score = vals[1]
+    score_flag = vals[2]
+    i = vals[3] ## i denotes the current pointer in the mappings
+    read_name=l1[0]
+    inds[0] += 1
+
+    flag1 = int(l1[1])
+    flag2 = int(l2[1])
     
-def best_mapping_sam(sam_file, pickle_file, keep_recname=False, num_chunks=100):
-    mappings = []
-    if keep_recname:
-        mappings = {}
+    is_paired = (flag1 & 1 == 1) and (flag2 & 1 == 1)
+    is_proper_pair = (flag1 & 2 == 2) and (flag2 & 2 == 2)
+    if read_name!=l2[0]:
+        if not is_proper_pair:
+            inds[0] -= 1
+            return [read_name,best_score, 0, i] 
+        sys.exit("incompatible read names")
+    if score_flag == -1 and prev_read == read_name:
+        return [read_name,-1, -1, i]
+    if is_paired and is_proper_pair:
+        score1 = int(l1[11].split(":")[2].strip())
+        score2 = int(l2[11].split(":")[2].strip())
+        score = score1+score2
+        if read_name != prev_read :
+            mappings.append(1) ## new read, thus create an entry, score_flag 0 means check, -1 means prev_read same as cur_read but score is inferior
+            return [read_name, score, 0, i+1]
+        else: ## same read
+            if score > best_score:
+                mappings[i]=1
+                return [read_name, score, 0, i]
+            elif best_score == score: ## append s
+                mappings[i]+=1
+                return [read_name, score, 0, i]
+            else:
+                return [read_name, best_score, -1, i]
+    return [read_name, best_score, 0, i]
     
+def best_mapping_sam(sam_file, pickle_file, keep_recname=False, num_chunks=100): 
     check_header = True
     first = True
     read_name=""
     inds=[0]
-    vals = [read_name, 0, -1]
+    mappings = []
+    vals = [read_name, -1, 0, -1]
+    
+    if keep_recname:
+        vals = [read_name, 0, -1]    
+        mappings = {}
+    
     with open(sam_file, 'r') as f:
         while True:
             inds[0]=0
