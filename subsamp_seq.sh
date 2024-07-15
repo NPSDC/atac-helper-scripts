@@ -3,20 +3,22 @@
 fastq_dir=/fs/cbcb-lab/rob/students/noor/Atacseq/10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs
 base_filename=10k_pbmc_ATACv2_nextgem_Chromium_Controller_S3_L001
 seqkit_path=/fs/cbcb-lab/rob/students/noor/Atacseq/seqkit 
+out_dir=/fs/cbcb-lab/rob/students/noor/Atacseq/$1
+seed=$2
 
-read1_file=sub_seq/read1_subsamp.fq
-read2_file=sub_seq/read2_subsamp.fq
-barcode_file=sub_seq/barcode_subsamp.fq
+read1_file=${out_dir}/read1_subsamp.fq
+read2_file=${out_dir}/read2_subsamp.fq
+barcode_file=${out_dir}/barcode_subsamp.fq
 
-read1_temp=sub_seq/read1_temp.fq
-read2_temp=sub_seq/read2_temp.fq
-barcode_temp=sub_seq/barcode_temp.fq
+read1_temp=${out_dir}/read1_temp.fq
+read2_temp=${out_dir}/read2_temp.fq
+barcode_temp=${out_dir}/barcode_temp.fq
 
 rem_dup_bar=true
 
-$seqkit_path sample -p 0.000005 $fastq_dir/${base_filename}_R1_001.fastq.gz -j 16  -o $read1_file
-$seqkit_path sample -p 0.000005 $fastq_dir/${base_filename}_R3_001.fastq.gz -j 16  -o $read2_file
-$seqkit_path sample -p 0.000005 $fastq_dir/${base_filename}_R2_001.fastq.gz -j 16  -o $barcode_file
+$seqkit_path sample -p 0.000005 -s $seed $fastq_dir/${base_filename}_R1_001.fastq.gz -j 16  -o $read1_file
+$seqkit_path sample -p 0.000005 -s $seed $fastq_dir/${base_filename}_R3_001.fastq.gz -j 16  -o $read2_file
+$seqkit_path sample -p 0.000005 -s $seed $fastq_dir/${base_filename}_R2_001.fastq.gz -j 16  -o $barcode_file
 
 ### We can have barcodes repeated ideally (each barcode corresponds to cell)
 

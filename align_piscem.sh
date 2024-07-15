@@ -23,7 +23,8 @@ psc_off=true
 ps_skip=false
 thr=0.7
 ref_ind=/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_analysis/hg38_ind_k${k}/hg38_ind_k${k}
-piscem_dir=/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_analysis
+#piscem_dir=/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_analysis
+piscem_dir=/fs/nexus-projects/scATAC-seq/piscem
 #piscem_dir=/fs/cbcb-scratch/npsingh/Atacseq/piscem_analysis
 out_start=$1
 barcode_file=$2
@@ -33,11 +34,12 @@ base_filename=10k_pbmc_ATACv2_nextgem_Chromium_Controller_S3_L001
 pesc_sc_atac=/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_noor/piscem-cpp/build
 out_dir=$piscem_dir/${out_start}_k${k}_psc_off=${psc_off}_ps_skip=${ps_skip}_thr=${thr}
 mkdir -p $out_dir
+
 #mkdir -p "$WORKDIR" && cd "$WORKDIR" || exit -1
 
 if [[ -n $4 ]]
     then
-        /usr/bin/time -o $out_dir/time_align.out $pesc_sc_atac/pesc-sc-atac --index $ref_ind \
+        CPUPROFILE=prof.out $pesc_sc_atac/pesc-sc-atac --index $ref_ind \
         --read1 $read1_file \
         --read2 $read2_file \
         --barcode $barcode_file \
@@ -45,6 +47,15 @@ if [[ -n $4 ]]
         --psc_off $psc_off \
         --ps_skip $ps_skip \
         --thr $thr
+        pprof --pdf $pesc_sc_atac/pesc-sc-atac prof.out > new_query.pdf
+        # /usr/bin/time -o $out_dir/time_align.out $pesc_sc_atac/pesc-sc-atac --index $ref_ind \
+        # --read1 $read1_file \
+        # --read2 $read2_file \
+        # --barcode $barcode_file \
+        # --output $out_dir \
+        # --psc_off $psc_off \
+        # --ps_skip $ps_skip \
+        # --thr $thr
 else
         /usr/bin/time -o $out_dir/time_align.out $pesc_sc_atac/pesc-sc-atac --index $ref_ind \
         --read1 $read1_file \
