@@ -44,8 +44,6 @@ if [[ -n $4 ]]
         --read2 $read2_file \
         --barcode $barcode_file \
         --output $out_dir \
-        --psc_off $psc_off \
-        --ps_skip $ps_skip \
         --thr $thr
         pprof --pdf $pesc_sc_atac/pesc-sc-atac prof.out > new_query.pdf
         # /usr/bin/time -o $out_dir/time_align.out $pesc_sc_atac/pesc-sc-atac --index $ref_ind \
